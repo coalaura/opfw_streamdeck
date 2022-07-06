@@ -2,7 +2,7 @@
 
 1. Download and install the UDP streamdeck plugin [here](https://github.com/Zayik/CommandSender) ([direct-download](https://github.com/Zayik/CommandSender/raw/master/Release/com.biffmasterzay.commandsender.streamDeckPlugin))
 2. Download the precompiled integration binary [here](dist/OP-FW Streamdeck.exe) or compile it yourself
-3. Run the `opfw_streamdeck.exe` (you will have to run this everytime before you open FiveM)
+3. Run the `OP-FW Streamdeck.exe` (you will have to run this everytime before you open FiveM)
 4. It will not open a window or command prompt but add an icon to your taskbar    
 ![screenshot](https://i.twoot.org/Cufo7/liqEguFu74.png)
 5. You can right click the icon to quit the app or open the latest logfile  
