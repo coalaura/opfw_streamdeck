@@ -1,7 +1,7 @@
 # Streamdeck OP-FW integration
 
 1. Download and install the UDP streamdeck plugin [here](https://github.com/Zayik/CommandSender) ([direct-download](https://github.com/Zayik/CommandSender/raw/master/Release/com.biffmasterzay.commandsender.streamDeckPlugin))
-2. Download the precompiled integration binary [here](dist/opfw_streamdeck.exe) or compile it yourself
+2. Download the precompiled integration binary [here](dist/OP-FW Streamdeck.exe) or compile it yourself
 3. Run the `opfw_streamdeck.exe` (you will have to run this everytime before you open FiveM)
 4. It should open a command prompt saying something similar to this  
 ![screenshot](https://i.twoot.org/Cufo7/RImeYAcO29.png)
@@ -16,4 +16,4 @@
 ![screenshot](https://i.twoot.org/Cufo7/zUpoBova02.png)
 10. In the `Command Pressed` field you enter what ever FiveM command you want to run when you press the button on your streamdeck
 
-You're all set, you will have to run `opfw_streamdeck.exe` every time you load into FiveM. If you open it after you have already loaded into FiveM you will have to run the `/reconnect_command_socket` command.
+You're all set, you will have to run `OP-FW Streamdeck.exe` every time you load into FiveM. If you open it after you have already loaded into FiveM you will have to run the `/reconnect_command_socket` command.

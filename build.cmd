@@ -2,6 +2,8 @@
 
 echo Building...
 mkdir dist
-go build -o dist\opfw_streamdeck.exe
+go-winres make
+go build -o "dist\OP-FW Streamdeck.exe"
 
 echo Done
+pause
