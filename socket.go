@@ -41,7 +41,7 @@ func NewSocketHub() *SocketHub {
 	})
 
 	go func() {
-		err := http.ListenAndServe(":42000", nil)
+		err := http.ListenAndServe("127.0.0.1:42000", nil)
 
 		log.MustPanic(err)
 	}()

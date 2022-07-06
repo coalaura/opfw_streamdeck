@@ -8,7 +8,7 @@ import (
 func StartUDPServer() {
 	conn, err := net.ListenUDP("udp", &net.UDPAddr{
 		Port: 42069,
-		IP:   net.ParseIP("0.0.0.0"),
+		IP:   net.ParseIP("127.0.0.1"),
 	})
 	log.MustPanic(err)
 
