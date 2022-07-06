@@ -18,6 +18,15 @@ var (
 
 	//go:embed icon.ico
 	iconData []byte
+
+	//go:embed icons/quit.ico
+	quitIcon []byte
+
+	//go:embed icons/oldLogs.ico
+	oldLogsIcon []byte
+
+	//go:embed icons/currentLogs.ico
+	currentLogsIcon []byte
 )
 
 func main() {
@@ -26,7 +35,8 @@ func main() {
 		panic(err)
 	}
 
-	_ = os.RemoveAll("op-fw_streamdeck.log")
+	_ = os.RemoveAll("op-fw_streamdeck.old.log")
+	_ = os.Rename("op-fw_streamdeck.log", "op-fw_streamdeck.old.log")
 
 	file, err := os.OpenFile("op-fw_streamdeck.log", os.O_CREATE|os.O_RDWR, 0777)
 	if err != nil {
@@ -66,17 +76,37 @@ func onReady() {
 	systray.SetTitle("OP-FW Streamdeck")
 	systray.SetTooltip("OP-FW Streamdeck")
 
-	mLogs := systray.AddMenuItem("Show Logs", "Opens the most recent log file")
+	mLogs := systray.AddMenuItem("Show current Logs", "Opens the current log file")
+
+	mLogs.SetIcon(currentLogsIcon)
 
 	go func() {
-		<-mLogs.ClickedCh
+		for {
+			<-mLogs.ClickedCh
 
-		path, _ := filepath.Abs("op-fw_streamdeck.log")
+			path, _ := filepath.Abs("op-fw_streamdeck.log")
 
-		_ = open.Start(path)
+			_ = open.Start(path)
+		}
+	}()
+
+	mOldLogs := systray.AddMenuItem("Show previous Logs", "Opens the most recent log file")
+
+	mOldLogs.SetIcon(oldLogsIcon)
+
+	go func() {
+		for {
+			<-mOldLogs.ClickedCh
+
+			path, _ := filepath.Abs("op-fw_streamdeck.old.log")
+
+			_ = open.Start(path)
+		}
 	}()
 
 	mQuit := systray.AddMenuItem("Quit", "Quit the integration")
+
+	mQuit.SetIcon(quitIcon)
 
 	go func() {
 		<-mQuit.ClickedCh
