@@ -20,10 +20,16 @@ func StartUDPServer() {
 			if err != nil {
 				log.Warning("Failed to read udp message: " + err.Error())
 
+				info.LastError = err
+
+				info.FailedRead++
+
 				continue
 			}
 
 			data := message[:length]
+
+			info.ReceivedCommands++
 
 			log.DebugF("<- %s\n", strings.TrimSpace(string(data)))
 

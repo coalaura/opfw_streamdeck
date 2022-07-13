@@ -52,6 +52,8 @@ func NewSocketHub() *SocketHub {
 			case client := <-h.register:
 				h.clients[client] = true
 
+				info.ActiveConnections = len(h.clients)
+
 				log.DebugF("-> New client connected (%d total)\n", len(h.clients))
 			case client := <-h.unregister:
 				if _, ok := h.clients[client]; ok {
@@ -60,16 +62,26 @@ func NewSocketHub() *SocketHub {
 
 					_ = client.conn.Close()
 
+					info.ActiveConnections = len(h.clients)
+
 					log.DebugF("-> Client disconnected (%d total)\n", len(h.clients))
 				}
 			case message := <-h.broadcast:
+				sent := false
+
 				for client := range h.clients {
 					select {
 					case client.send <- message:
+						sent = true
 					default:
-						close(client.send)
-						delete(h.clients, client)
+						info.FailedSend++
+
+						h.unregister <- client
 					}
+				}
+
+				if sent {
+					info.SentCommands++
 				}
 			}
 		}
@@ -87,7 +99,9 @@ func (h *SocketHub) DisconnectAll() {
 func (h *SocketHub) HandleSocket(w http.ResponseWriter, r *http.Request) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Warning("Failed to upgrade docket: " + err.Error())
+		log.Warning("Failed to upgrade socket: " + err.Error())
+
+		info.LastError = err
 
 		return
 	}
@@ -118,12 +132,16 @@ func (h *SocketHub) HandleSocket(w http.ResponseWriter, r *http.Request) {
 				if err := ws.WriteMessage(websocket.TextMessage, msg); err != nil {
 					h.unregister <- &conn
 
+					info.LastError = err
+
 					return
 				}
 			case <-ticker.C:
 				_ = ws.SetWriteDeadline(time.Now().Add(5 * time.Second))
 				if err := ws.WriteMessage(websocket.PingMessage, nil); err != nil {
 					h.unregister <- &conn
+
+					info.LastError = err
 
 					return
 				}

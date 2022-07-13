@@ -16,8 +16,13 @@ var (
 
 	log *logger_v2.Logger
 
+	info = DebugInfo{}
+
 	//go:embed icon.ico
 	iconData []byte
+
+	//go:embed icons/debug.ico
+	debugIcon []byte
 
 	//go:embed icons/quit.ico
 	quitIcon []byte
@@ -75,6 +80,18 @@ func onReady() {
 
 	systray.SetTitle("OP-FW Streamdeck")
 	systray.SetTooltip("OP-FW Streamdeck")
+
+	mDebug := systray.AddMenuItem("Debug", "Creates a debug dump")
+
+	mDebug.SetIcon(debugIcon)
+
+	go func() {
+		for {
+			<-mDebug.ClickedCh
+
+			dumpDebugData()
+		}
+	}()
 
 	mLogs := systray.AddMenuItem("Show current Logs", "Opens the current log file")
 
