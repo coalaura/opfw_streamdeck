@@ -19,3 +19,16 @@
 11. In the `Command Pressed` field you enter what ever FiveM command you want to run when you press the button on your streamdeck
 
 You're all set, you will have to run `OP-FW Streamdeck.exe` every time you load into FiveM. If you open it after you have already loaded into FiveM you will have to run the `/reconnect_command_socket` command.
+
+### Troubleshooting
+
+If the streamdeck integration is not working, try following these steps:
+
+1. Fully quit streamdeck  
+![screenshot](https://i.twoot.org/Cufo7/YIBUwEXE26.png)
+2. Fully quit the integration  
+![screenshot](https://i.twoot.org/Cufo7/WAjISIwa67.png)
+3. Start the integration back up
+4. Start the streamdeck software back up
+5. Run `/reconnect_command_socket` in the legacy server  
+![screenshot](https://i.twoot.org/Cufo7/mEZEPEME36.png)
