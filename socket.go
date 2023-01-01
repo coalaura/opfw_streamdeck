@@ -183,9 +183,9 @@ func (h *SocketHub) HandleSocket(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleEvent(name string) {
-	configMutex.Lock()
+	config.mutex.Lock()
 
-	for _, event := range config {
+	for _, event := range config.Events {
 		if event.Name == name {
 			go func() {
 				event.mutex.Lock()
@@ -199,5 +199,5 @@ func HandleEvent(name string) {
 		}
 	}
 
-	configMutex.Unlock()
+	config.mutex.Unlock()
 }

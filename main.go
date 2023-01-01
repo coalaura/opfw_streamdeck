@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
-	"sync"
 	"syscall"
 )
 
@@ -19,8 +18,7 @@ var (
 
 	info = DebugInfo{}
 
-	configMutex sync.Mutex
-	config      []*Event
+	config *Config
 
 	//go:embed icon.ico
 	iconData []byte
@@ -92,8 +90,8 @@ func reloadConfig() {
 		log.WarningE(err)
 	}
 
-	if len(config) > 0 {
-		log.InfoF("Loaded %d event listener(s)\n", len(config))
+	if len(config.Events) > 0 {
+		log.InfoF("Loaded %d event listener(s)\n", len(config.Events))
 	}
 }
 
@@ -124,9 +122,7 @@ func onReady() {
 
 		log.Info("Reloading config...")
 
-		configMutex.Lock()
 		reloadConfig()
-		configMutex.Unlock()
 	}()
 
 	mLogs := systray.AddMenuItem("Show current Logs", "Opens the current log file")

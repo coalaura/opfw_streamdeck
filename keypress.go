@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/micmonay/keybd_event"
 	"strings"
+	"time"
 )
 
 func parseKeypressCallback(data string) (func(), error) {
@@ -12,15 +13,31 @@ func parseKeypressCallback(data string) (func(), error) {
 		return nil, errors.New("invalid key")
 	}
 
-	kb, err := keybd_event.NewKeyBonding()
-	if err != nil {
-		return nil, err
-	}
-
 	return func() {
+		kb, err := keybd_event.NewKeyBonding()
+		if err != nil {
+			log.Warning("Failed to create key bonding: %s", err)
+
+			return
+		}
+
 		kb.SetKeys(key)
 
-		_ = kb.Launching()
+		err = kb.Press()
+		if err != nil {
+			log.Warning("Failed to press key (%s): %s", data, err)
+
+			return
+		}
+
+		time.Sleep(100 * time.Millisecond)
+
+		err = kb.Release()
+		if err != nil {
+			log.Warning("Failed to release key (%s): %s", data, err)
+		}
+
+		log.Debug("Pressed key: %s", data)
 	}, nil
 }
 

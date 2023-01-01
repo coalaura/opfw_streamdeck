@@ -21,11 +21,17 @@ type Event struct {
 	mutex sync.Mutex
 }
 
+type Config struct {
+	Events []*Event
+
+	mutex sync.Mutex
+}
+
 var (
 	userHomeDir string
 )
 
-func loadConfig() ([]*Event, error) {
+func loadConfig() (*Config, error) {
 	dirname, err := os.UserHomeDir()
 	if err != nil {
 		return nil, errors.New("failed to get user home directory")
@@ -51,7 +57,9 @@ func loadConfig() ([]*Event, error) {
 		return nil, errors.New("failed to parse config file")
 	}
 
-	return events, nil
+	return &Config{
+		Events: events,
+	}, nil
 }
 
 func parseConfig(data string) []*Event {
