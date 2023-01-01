@@ -28,6 +28,9 @@ var (
 	//go:embed icons/debug.ico
 	debugIcon []byte
 
+	//go:embed icons/config.ico
+	configIcon []byte
+
 	//go:embed icons/quit.ico
 	quitIcon []byte
 
@@ -54,14 +57,7 @@ func main() {
 
 	log = logger_v2.New(false, file)
 
-	config, err = loadConfig()
-	if err != nil {
-		log.WarningE(err)
-	}
-
-	if len(config) > 0 {
-		log.InfoF("Loaded %d event listener(s)\n", len(config))
-	}
+	reloadConfig()
 
 	log.Info("Preparing systray...")
 	go systray.Run(onReady, onExit)
@@ -88,6 +84,19 @@ func main() {
 	_ = file.Close()
 }
 
+func reloadConfig() {
+	var err error
+
+	config, err = loadConfig()
+	if err != nil {
+		log.WarningE(err)
+	}
+
+	if len(config) > 0 {
+		log.InfoF("Loaded %d event listener(s)\n", len(config))
+	}
+}
+
 func onReady() {
 	systray.SetIcon(iconData)
 
@@ -104,6 +113,20 @@ func onReady() {
 
 			dumpDebugData()
 		}
+	}()
+
+	mConfig := systray.AddMenuItem("Reload Config", "Reload the configuration file")
+
+	mConfig.SetIcon(configIcon)
+
+	go func() {
+		<-mConfig.ClickedCh
+
+		log.Info("Reloading config...")
+
+		configMutex.Lock()
+		reloadConfig()
+		configMutex.Unlock()
 	}()
 
 	mLogs := systray.AddMenuItem("Show current Logs", "Opens the current log file")
