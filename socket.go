@@ -118,6 +118,38 @@ func (h *SocketHub) HandleSocket(w http.ResponseWriter, r *http.Request) {
 
 	h.register <- &conn
 
+	_ = ws.SetReadDeadline(time.Now().Add(60 * time.Second))
+
+	ws.SetPongHandler(func(string) error {
+		_ = ws.SetReadDeadline(time.Now().Add(60 * time.Second))
+
+		return nil
+	})
+
+	go func() {
+		for {
+			mt, message, err := ws.ReadMessage()
+
+			if err != nil {
+				log.Warning("Failed to read message: " + err.Error())
+
+				h.unregister <- &conn
+
+				info.LastError = err
+
+				break
+			}
+
+			if mt == websocket.TextMessage {
+				event := string(message)
+
+				log.Debug("-> " + event)
+
+				HandleEvent(event)
+			}
+		}
+	}()
+
 	go func() {
 		ticker := time.NewTicker(10 * time.Second)
 		defer func() {
@@ -148,4 +180,24 @@ func (h *SocketHub) HandleSocket(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}()
+}
+
+func HandleEvent(name string) {
+	configMutex.Lock()
+
+	for _, event := range config {
+		if event.Name == name {
+			go func() {
+				event.mutex.Lock()
+
+				for _, command := range event.Commands {
+					command.Callback()
+				}
+
+				event.mutex.Unlock()
+			}()
+		}
+	}
+
+	configMutex.Unlock()
 }

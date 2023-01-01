@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"sync"
 	"syscall"
 )
 
@@ -17,6 +18,9 @@ var (
 	log *logger_v2.Logger
 
 	info = DebugInfo{}
+
+	configMutex sync.Mutex
+	config      []*Event
 
 	//go:embed icon.ico
 	iconData []byte
@@ -49,6 +53,11 @@ func main() {
 	}
 
 	log = logger_v2.New(false, file)
+
+	config, err = loadConfig()
+	if err != nil {
+		log.WarningE(err)
+	}
 
 	log.Info("Preparing systray...")
 	go systray.Run(onReady, onExit)
