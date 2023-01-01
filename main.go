@@ -59,6 +59,10 @@ func main() {
 		log.WarningE(err)
 	}
 
+	if len(config) > 0 {
+		log.InfoF("Loaded %d event listener(s)\n", len(config))
+	}
+
 	log.Info("Preparing systray...")
 	go systray.Run(onReady, onExit)
 
