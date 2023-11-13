@@ -1,29 +1,23 @@
 package main
 
 import (
-	"syscall"
-	"unsafe"
+	"os"
+	"path/filepath"
+
+	"gopkg.in/toast.v1"
 )
 
-var (
-	user32         = syscall.NewLazyDLL("user32.dll")
-	procMessageBox = user32.NewProc("MessageBoxW")
-)
+func alert(title, msg string) {
+	icon := filepath.Join(os.TempDir(), "opfw_streamdeck.ico")
 
-const (
-	MB_OK          = 0x00000000
-	MB_SYSTEMMODAL = 0x00001000
-	MB_ICONWARNING = 0x00000030
-)
+	os.WriteFile(icon, iconData, 0644)
 
-func alert(msg string) {
-	lpCaption, _ := syscall.UTF16PtrFromString("OP-FW Streamdeck")
-	lpText, _ := syscall.UTF16PtrFromString(msg)
+	notification := toast.Notification{
+		AppID:   "OP-FW Streamdeck",
+		Title:   title,
+		Message: msg,
+		Icon:    icon,
+	}
 
-	syscall.SyscallN(procMessageBox.Addr(),
-		0,
-		uintptr(unsafe.Pointer(lpText)),
-		uintptr(unsafe.Pointer(lpCaption)),
-		MB_OK|MB_ICONWARNING|MB_SYSTEMMODAL,
-	)
+	notification.Push()
 }

@@ -45,7 +45,7 @@ func NewSocketHub() *SocketHub {
 		err := http.ListenAndServe("127.0.0.1:42000", nil)
 
 		if err != nil {
-			alert("Failed to start socket server. Make sure no other application is using port 42000. You may have to check \"unblock\" in the exe's properties.")
+			alert("Startup Error", "Failed to start socket server. Make sure no other application is using port 42000. You may have to check \"unblock\" in the exe's properties.")
 
 			log.MustPanic(err)
 		}

@@ -11,7 +11,7 @@ func StartUDPServer() {
 		IP:   net.ParseIP("127.0.0.1"),
 	})
 	if err != nil {
-		alert("Failed to start UDP server. Make sure no other application is using port 42069. You may have to check \"unblock\" in the exe's properties.")
+		alert("Startup Error", "Failed to start UDP server. Make sure no other application is using port 42069. You may have to check \"unblock\" in the exe's properties.")
 
 		log.MustPanic(err)
 	}

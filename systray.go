@@ -57,9 +57,9 @@ func onReady() {
 		err := removeFromAutoStart()
 
 		if err != nil {
-			alert("Unable to remove from auto-start. Please try again as administrator.")
+			alert("Error", "Unable to remove from auto-start. Please try again as administrator.")
 		} else {
-			alert("Removed from auto-start.")
+			alert("Success", "Removed from auto-start.")
 		}
 
 		updateAutoStartItems()
@@ -69,9 +69,9 @@ func onReady() {
 		err := addToAutoStart()
 
 		if err != nil {
-			alert("Unable to add to auto-start. Please try again as administrator.")
+			alert("Error", "Unable to add to auto-start. Please try again as administrator.")
 		} else {
-			alert("Added to auto-start.")
+			alert("Success", "Added to auto-start.")
 		}
 
 		updateAutoStartItems()
