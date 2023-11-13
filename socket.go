@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/gorilla/websocket"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 var upgrader = websocket.Upgrader{
@@ -43,7 +44,11 @@ func NewSocketHub() *SocketHub {
 	go func() {
 		err := http.ListenAndServe("127.0.0.1:42000", nil)
 
-		log.MustPanic(err)
+		if err != nil {
+			alert("Failed to start socket server. Make sure no other application is using port 42000. You may have to check \"unblock\" in the exe's properties.")
+
+			log.MustPanic(err)
+		}
 	}()
 
 	go func() {
@@ -187,7 +192,7 @@ func HandleEvent(name string) {
 
 	for _, event := range config.Events {
 		if event.Name == name {
-			go func() {
+			go func(event *Event) {
 				event.mutex.Lock()
 
 				for _, command := range event.Commands {
@@ -195,7 +200,7 @@ func HandleEvent(name string) {
 				}
 
 				event.mutex.Unlock()
-			}()
+			}(event)
 		}
 	}
 

@@ -2,13 +2,14 @@ package main
 
 import (
 	_ "embed"
-	"github.com/getlantern/systray"
-	"github.com/skratchdot/open-golang/open"
-	"gitlab.com/milan44/logger-v2"
 	"os"
 	"os/signal"
 	"path/filepath"
 	"syscall"
+
+	"github.com/getlantern/systray"
+	"github.com/skratchdot/open-golang/open"
+	logger_v2 "gitlab.com/milan44/logger-v2"
 )
 
 var (
@@ -42,6 +43,8 @@ var (
 func main() {
 	_, err := CreateMutex("OPFW_STREAMDECK")
 	if err != nil {
+		alert("OP-FW Streamdeck is already running. You can only run one instance at a time.")
+
 		panic(err)
 	}
 
@@ -50,6 +53,8 @@ func main() {
 
 	file, err := os.OpenFile("op-fw_streamdeck.log", os.O_CREATE|os.O_RDWR, 0777)
 	if err != nil {
+		alert("Unable to create log file. Please check your permissions and try again. You may have to check \"unblock\" in the exe's properties.")
+
 		panic(err)
 	}
 
