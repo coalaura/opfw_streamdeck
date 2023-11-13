@@ -35,6 +35,9 @@ var (
 	reloadIcon []byte
 
 	systrayExit chan bool
+
+	removeAutoItem *systray.MenuItem
+	addAutoItem    *systray.MenuItem
 )
 
 func initSystray() {
@@ -50,27 +53,31 @@ func onReady() {
 
 	addSystrayItem("Debug", "Creates a debug dump", infoIcon, dumpDebugData)
 
-	if isAutoStart() {
-		addSystrayItem("Remove Auto-Start", "Remove the application from auto-start.", lampOffIcon, func() {
-			err := removeFromAutoStart()
+	removeAutoItem = addSystrayItem("Remove Auto-Start", "Remove the application from auto-start.", lampOffIcon, func() {
+		err := removeFromAutoStart()
 
-			if err != nil {
-				alert("Unable to remove from auto-start. Please try again as administrator.")
-			} else {
-				alert("Removed from auto-start.")
-			}
-		})
-	} else {
-		addSystrayItem("Add Auto-Start", "Add the application to auto-start.", lampIcon, func() {
-			err := addToAutoStart()
+		if err != nil {
+			alert("Unable to remove from auto-start. Please try again as administrator.")
+		} else {
+			alert("Removed from auto-start.")
+		}
 
-			if err != nil {
-				alert("Unable to add to auto-start. Please try again as administrator.")
-			} else {
-				alert("Added to auto-start.")
-			}
-		})
-	}
+		updateAutoStartItems()
+	})
+
+	addAutoItem = addSystrayItem("Add Auto-Start", "Add the application to auto-start.", lampIcon, func() {
+		err := addToAutoStart()
+
+		if err != nil {
+			alert("Unable to add to auto-start. Please try again as administrator.")
+		} else {
+			alert("Added to auto-start.")
+		}
+
+		updateAutoStartItems()
+	})
+
+	updateAutoStartItems()
 
 	addSystrayItem("Reload Config", "Reload the configuration file", reloadIcon, reloadConfig)
 
@@ -99,7 +106,7 @@ func onExit() {
 	println("Exiting...")
 }
 
-func addSystrayItem(name, description string, icon []byte, callback func()) {
+func addSystrayItem(name, description string, icon []byte, callback func()) *systray.MenuItem {
 	item := systray.AddMenuItem(name, description)
 
 	item.SetIcon(icon)
@@ -114,4 +121,16 @@ func addSystrayItem(name, description string, icon []byte, callback func()) {
 			}
 		}
 	}()
+
+	return item
+}
+
+func updateAutoStartItems() {
+	if isAutoStart() {
+		removeAutoItem.Show()
+		addAutoItem.Hide()
+	} else {
+		removeAutoItem.Hide()
+		addAutoItem.Show()
+	}
 }
