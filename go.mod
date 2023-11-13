@@ -4,6 +4,7 @@ go 1.17
 
 require (
 	github.com/getlantern/systray v1.2.1
+	github.com/go-ole/go-ole v1.3.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/micmonay/keybd_event v1.1.1
 	github.com/mitchellh/go-ps v1.0.0
@@ -37,6 +38,6 @@ require (
 	github.com/ugorji/go/codec v1.1.7 // indirect
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9 // indirect
-	golang.org/x/sys v0.0.0-20210330210617-4fbd30eecc44 // indirect
+	golang.org/x/sys v0.1.0 // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 )
