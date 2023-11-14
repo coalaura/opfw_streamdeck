@@ -48,6 +48,7 @@ func addToAutoStart() error {
 	defer idispatch.Release()
 
 	oleutil.PutProperty(idispatch, "TargetPath", os.Args[0])
+	oleutil.PutProperty(idispatch, "WorkingDirectory", filepath.Dir(os.Args[0]))
 	oleutil.CallMethod(idispatch, "Save")
 
 	return nil
